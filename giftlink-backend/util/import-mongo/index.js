@@ -16,25 +16,20 @@ async function loadData() {
     const client = new MongoClient(url);
 
     try {
-        // Connect to the MongoDB client
+        // Conectar al cliente
         await client.connect();
         console.log("Connected successfully to server");
 
-        // database will be created if it does not exist
         const db = client.db(dbName);
-
-        // collection will be created if it does not exist
         const collection = db.collection(collectionName);
-        let cursor = await collection.find({});
-        let documents = await cursor.toArray();
 
-        if(documents.length == 0) {
-            // Insert data into the collection
-            const insertResult = await collection.insertMany(data);
-            console.log('Inserted documents:', insertResult.insertedCount);
-        } else {
-            console.log("Gifts already exists in DB")
-        }
+        // --- LÍNEA NUEVA: Borra lo que haya para evitar el "Gifts already exists" ---
+        await collection.deleteMany({}); 
+
+        // Insertar los datos directamente
+        const insertResult = await collection.insertMany(data);
+        console.log('Inserted documents:', insertResult.insertedCount);
+
     } catch (err) {
         console.error(err);
     } finally {
