@@ -1,4 +1,4 @@
-mport React, { useState } from 'react';
+import React, { useState } from 'react';
 import './RegisterPage.css';
 
 function RegisterPage() {
@@ -94,4 +94,4 @@ function RegisterPage() {
     );
 }
 
-export default RegisterPage;i
+export default RegisterPage;
