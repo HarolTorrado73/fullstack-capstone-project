@@ -1,0 +1,9 @@
+theia@theiaopenshift-harolcamilom:/home/project/fullstack-capstone-project$ curl --location 'http://localhost:3060/api/auth/register' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "firstName": "Lachlan",
+    "lastName": "Baker",
+    "email": "lachie@gmail.com",
+    "password": "lac123"
+}'
+{"authtoken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjlmMjBmZTg3MGQzY2E3ZDg4ODZmMDNmIn0sImlhdCI6MTc3NzQ3MTQ2NH0.0PWdSWibc64TzLf0VPnNyJEeg68KBtyq1AjcevSOp7E","email":"lachie@gmail.com"}
