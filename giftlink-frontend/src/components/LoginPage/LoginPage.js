@@ -1,14 +1,109 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LoginPage.css';
+import { urlConfig } from '../../config';
+import { useAppContext } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [incorrect, setIncorrect] = useState('');
 
-    const handleLogin = () => {
-        console.log("Login invoked");
+    const navigate = useNavigate();
+
+    const bearerToken = sessionStorage.getItem('auth-token');
+
+    const { setIsLoggedIn } = useAppContext();
+
+    useEffect(() => {
+
+        if (sessionStorage.getItem('auth-token')) {
+            navigate('/app');
+
+        }
+
+    }, [navigate]);
+
+    const handleLogin = async () => {
+
+        try {
+
+            const response = await fetch(
+                `${urlConfig.backendUrl}/api/auth/login`,
+                {
+    
+                    method: 'POST',
+    
+                    headers: {
+                        'content-type': 'application/json',
+                        'Authorization': bearerToken
+                            ? `Bearer ${bearerToken}`
+                            : '',
+                    },
+    
+                    body: JSON.stringify({
+    
+                        email: email,
+                        password: password,
+    
+                    })
+    
+                }
+            );
+    
+            const json = await response.json();
+    
+            if (json.authtoken) {
+    
+                sessionStorage.setItem(
+                    'auth-token',
+                    json.authtoken
+                );
+    
+                sessionStorage.setItem(
+                    'name',
+                    json.userName
+                );
+    
+                sessionStorage.setItem(
+                    'email',
+                    json.userEmail
+                );
+    
+                setIsLoggedIn(true);
+    
+                navigate('/app');
+    
+            } else {
+    
+                document.getElementById("email").value = "";
+    
+                document.getElementById("password").value = "";
+    
+                setIncorrect(
+                    "Wrong password. Try again."
+                );
+    
+                setTimeout(() => {
+    
+                    setIncorrect("");
+    
+                }, 2000);
+    
+            }
+    
+        } catch (e) {
+    
+            console.log(
+                "Error fetching details: " + e.message
+            );
+    
+        }
+    
     };
+
+    
 
     return (
         <div className="container mt-5">
@@ -27,6 +122,7 @@ function LoginPage() {
                             </label>
 
                             <input
+                                id="email"
                                 type="email"
                                 className="form-control"
                                 value={email}
@@ -40,12 +136,24 @@ function LoginPage() {
                             </label>
 
                             <input
+                                id="password"
                                 type="password"
                                 className="form-control"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+                        <span
+                            style={{
+                                color:'red',
+                                height:'.5cm',
+                                display:'block',
+                                fontStyle:'italic',
+                                fontSize:'12px'
+                            }}
+                        >
+                            {incorrect}
+                        </span>
 
                         <button
                             className="btn btn-primary w-100"
