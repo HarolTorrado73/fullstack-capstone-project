@@ -1,4 +1,6 @@
+/*jshint esversion: 8 */
 // db.js
+
 const path = require('path');
 require('dotenv').config();
 const MongoClient = require('mongodb').MongoClient;
